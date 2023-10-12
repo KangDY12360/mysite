@@ -15,9 +15,9 @@ class IndexView(generic.ListView):
     def get_queryset(self):
         return Question.objects.order_by("-pub_date")[:5]
 
-class DetailView(generic.DateDetailView):
+class DetailView(generic.DetailView):
     model=Question
-    template_name="poll/detail.html"
+    template_name="polls/detail.html"
 
 class ResultView(generic.DetailView):
     model=Question
@@ -28,14 +28,10 @@ def vote(request,question_id):
     try:
         selected_choice=question.choice_set.get(pk=request.POST["choice"])
     except (KeyError,Choice.DoesNotExist):
-        return render(
-            request,
-            "polls/detail.html",
-            {
+        return render(request,"polls/detail.html",{
                 "question":question,
                 "error_message": "You did't select a choice.",
-            },
-            )
+            })
     else:
         selected_choice.votes+=1
         selected_choice.save()
